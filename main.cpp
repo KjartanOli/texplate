@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020  <name of copyright holder>
+ * Copyright (C) 2020  Ágústsson, Kjartan Óli <kjartanoli@protonmail.com>
  * Author: Ágústsson, Kjartan Óli <kjartanoli@protonmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -35,6 +35,7 @@ int main(int argc, char* argv[])
 	std::string title{};
 	std::string fileName{};
 	std::string docClass{};
+	bool utf8{false};
 
 	for (int i{1}; i < argc; ++i)
 	{
@@ -57,6 +58,10 @@ int main(int argc, char* argv[])
 		{
 			title = argv[++i];
 		}
+		else if (arg == "-u" || arg == "--utf8")
+		{
+			utf8 = true;
+		}
 		else if (i == argc - 2)
 		{
 			fileName = argv[i++];
@@ -69,6 +74,7 @@ int main(int argc, char* argv[])
 	file << "\\documentclass{" << docClass << "}\n\n"
 	<< (title != ""  ? "\\title{" + title + "}\n" : "")
 	<< (docAuthor != "" ? "\\author{" + docAuthor + "}\n" : "")
+	<< (utf8 ? "\\usepackage[T1]{fontenc}\n\\usepackage[utf8]{inputenc}\n" : "")
 	<< "\n\\begin{document}\n\t\n\\end{document}\n";
 
 	return 0;

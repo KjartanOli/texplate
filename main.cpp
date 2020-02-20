@@ -27,7 +27,7 @@ void version();
 
 static const std::string_view author{"Kjartan Óli Ágústsson"};
 static const std::string_view year{"2020"};
-static const std::string_view versionNum{"1.0.2"};
+static const std::string_view versionNum{"1.0.3"};
 
 int main(int argc, char* argv[])
 {
@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
 	std::string title{};
 	std::string fileName{};
 	std::string docClass{};
-	bool utf8{false};
+	std::string encoding{};
 
 	for (int i{1}; i < argc; ++i)
 	{
@@ -58,9 +58,9 @@ int main(int argc, char* argv[])
 		{
 			title = argv[++i];
 		}
-		else if (arg == "-u" || arg == "--utf8")
+		else if (arg == "-e" || arg == "--encoding")
 		{
-			utf8 = true;
+			encoding = argv[++i];
 		}
 		else if (i == argc - 2)
 		{
@@ -72,9 +72,10 @@ int main(int argc, char* argv[])
 	File file{fileName.find(".tex") == std::string::npos ? fileName + ".tex" : fileName};
 
 	file << "\\documentclass{" << docClass << "}\n\n"
+	<< "\\usepackage[T1]{fontenc}\n"
 	<< (title != ""  ? "\\title{" + title + "}\n" : "")
 	<< (docAuthor != "" ? "\\author{" + docAuthor + "}\n" : "")
-	<< (utf8 ? "\\usepackage[T1]{fontenc}\n\\usepackage[utf8]{inputenc}\n" : "")
+	<< (encoding != ""  ? "\\usepackage[" + encoding + "]{inputenc}\n" : "")
 	<< "\n\\begin{document}\n\t\n\\end{document}\n";
 
 	return 0;

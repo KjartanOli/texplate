@@ -27,7 +27,7 @@ void version();
 
 static const std::string_view author{"Kjartan Óli Ágústsson"};
 static const std::string_view year{"2020"};
-static const std::string_view versionNum{"1.0.1"};
+static const std::string_view versionNum{"1.0.2"};
 
 int main(int argc, char* argv[])
 {

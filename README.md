@@ -11,5 +11,5 @@ Texplate is an unofficial LaTex utility to generate document preambles.
 ```
 git clone https://github.com/KjartanOli/texplate.git
 cd texplate
-sudo make install
+make install
 ```

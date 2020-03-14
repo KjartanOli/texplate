@@ -81,10 +81,14 @@ bool has_bibpackage(const std::vector<std::string>& packages);
 std::ofstream open_file(const std::string& fileName);
 void write(const arguments& args);
 
+// copyright information
 static const std::string_view author{"Kjartan Óli Ágústsson"};
 static const std::string_view year{"2020"};
 
-static const short majorVersion{1}, minorVersion{3}, hotfix{0};
+// version information
+static const short majorVersion{1};
+static const short minorVersion{3};
+static const short hotfix{1};
 
 int main(int argc, char* argv[])
 {
@@ -203,6 +207,7 @@ void help(std::ostream& out)
 	<< "This is free software, and you are welcome to redistribute it\n";
 }
 
+// print unknown option message and print help
 void help(const std::string& unknown)
 {
 	std::cerr << "Unknown option: " << unknown << '\n';
@@ -217,6 +222,7 @@ void version()
 	<< " ABSOLUTELY NO WARRANTY.\nThis is free software, and you are welcome to redistribute it\n";
 }
 
+// check if the packages list contains some biblatex package
 bool has_bibpackage(const std::vector<std::string>& packages)
 {
 	for (const std::string& package : packages)
@@ -229,6 +235,7 @@ bool has_bibpackage(const std::vector<std::string>& packages)
 	return false;
 }
 
+// write to the file
 void write(const arguments& args)
 {
 	std::ofstream file{open_file(args.fileName)};
@@ -254,6 +261,7 @@ void write(const arguments& args)
 		file << '\n';
 		for (const std::string& source : args.bibsources)
 		{
+			// check if the .bib extension needs to be added
 			file << "\\addbibresource{" << (source.find(".bib") == std::string::npos ? source + ".bib" : source) << "}\n";
 		}
 	}
@@ -262,6 +270,7 @@ void write(const arguments& args)
 
 }
 
+// open the output file for writing
 std::ofstream open_file(const std::string& name)
 {
 	// append the ".tex" extension if necesary

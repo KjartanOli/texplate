@@ -8,6 +8,8 @@ Texplate is an unofficial LaTex utility to generate document preambles.
 
 # Getting started
 
-> git clone https://github.com/KjartanOli/texplate.git
-> cd texplate
-> sudo make install
+```
+git clone https://github.com/KjartanOli/texplate.git
+cd texplate
+sudo make install
+```

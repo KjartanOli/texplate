@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.5.0]
+### Added
+* Added the -d option to include the \date command
+
+### Changed
+* Broke main.cpp into multiple files
+
+## [1.4.2]
+### Changed
+* Fixed a spelling error
+
 ## [1.4.1]
 ### Added
 * CHANGELOG.md

@@ -17,45 +17,44 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARGS_H
-	#define ARGS_H
-
-	#include <json/value.h>
+#include <fstream>
+#include <json/value.h>
+#include <string_view>
+#include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
 #include <string>
-	#include <vector>
-	#include <map>
-	#include <json/json.h>
+#include <json/json.h>
 
-	struct arguments
-	{
-		std::string author;
-		std::string title;
-		std::string date;
-		std::string fileName;
-		std::string docClass;
-		std::string encoding;
-		std::string language;
-		std::string unknownOption;
-		std::vector<std::string> packages;
-		std::vector<std::string> bibsources;
-		bool help;
-		bool version;
-	};
+#include "config.hpp"
 
-	enum argumentValues
-	{
-		NOTOPTION,
-		AUTHOR,
-		DATE,
-		BIBSOURCE,
-		HELP,
-		TITLE,
-		ENCODING,
-		LANGUAGE,
-		USEPACKAGE,
-		VERSION,
-	};
+std::string get_config_file()
+{
+	#if defined(unix) || defined(__unix__) || defined(__unix)
+		char* home{getenv("HOME")};
+		if (home)
+		{
+			return std::string{strcat(home, "/.config/texplate.conf")};
+		}
+		return home;
+	#elif defined(_WIN32)
+		char* homeDrive{getenv("HOMEDRIVE")};
+		char* homePath{getenv("HOMEPATH")};
+		if (homeDrive && homePath)
+		{
+			return std::string_view{strcat(homeDrive, homePath)};
+		}
+	#endif
+}
 
-	void parse_args(arguments& args, const Json::Value& config, int argc, char* argv[]);
-	bool has_bibpackage(const std::vector<std::string>& packages);
-#endif
+void read_config(Json::Value& config)
+{
+	std::string path{get_config_file()};
+	std::ifstream file{path};
+	Json::CharReaderBuilder builder;
+	JSONCPP_STRING errs;
+
+	if (!parseFromStream(builder, file, &config, &errs)) {
+		std::cout << errs << std::endl;
+	}
+}

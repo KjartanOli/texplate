@@ -2,7 +2,8 @@
  * Copyright (C) 2020  Ágústsson, Kjartan Óli <kjartanoli@protonmail.com>
  * Author: Ágústsson, Kjartan Óli <kjartanoli@protonmail.com>
  *
- * This program is free software: you can redistribute it and/or modify
+ * This file is part of Texplate
+ * Texplate is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -16,16 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef FILE_H
-	#define FILE_H
+
+#ifndef CONFIG_H
+	#define CONFIG_H
 
 	#include <json/value.h>
 #include <string>
-	#include <nlohmann/json.hpp>
+	#include <json/json.h>
 
-	#include "args.hpp"
-
-	void write(const arguments& args, const Json::Value& config);
-	std::string add_extension(const std::string& fileName, const std::string& extension);
-	std::string add_options(const Json::Value& config, const std::string& package);
+	std::string get_config_file();
+	void read_config(Json::Value& config);
 #endif

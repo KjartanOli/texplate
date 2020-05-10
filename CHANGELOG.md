@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.6.0]
+### Added
+* Config files to set default values for certain options (author, encoding, language), options to include with packages and packages to be included by default
+* Any element of a title page (title, author, date) now causes a \maketitle command in the document
+
+### Changed
+* Moved the functionality of open_file() into write()
+
+### Removed
+* open_file()
+
 ## [1.5.0]
 ### Added
 * Added the -d option to include the \date command

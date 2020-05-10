@@ -18,12 +18,15 @@
  */
 
 #include <iostream>
+#include <json/value.h>
 #include <string>
 #include <string_view>
 #include <vector>
 
 #include "args.hpp"
 #include "file.hpp"
+
+#include "config.hpp"
 
 void help(std::ostream& out = std::cout);
 void help(const std::string& unknown);
@@ -35,12 +38,16 @@ static const std::string_view year{"2020"};
 
 // version information
 static const short majorVersion{1};
-static const short minorVersion{5};
+static const short minorVersion{6};
 static const short hotfix{0};
 
 int main(int argc, char* argv[])
 {
-	arguments args{parse_args(argc, argv)};
+	arguments args{};
+	Json::Value config{};
+
+	read_config(config);
+	parse_args(args, config, argc, argv);
 
 	if (args.help)
 	{
@@ -67,7 +74,7 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	write(args);
+	write(args, config);
 
 	return 0;
 }
@@ -81,15 +88,17 @@ void help(std::ostream& out)
 	<< "Create a basic LaTex document FILENAME with class DOCUMENTCLASS\n"
 	<< "Example: texplate -a Kjartan test article\n\n"
 	<< "Options:\n"
-	<< indent << "-a,\t--author=AUTHOR\t\tAdd a \\author{AUTHOR} command to the document\n"
+	<< indent << "-a,\t--author=[AUTHOR]*\tAdd a \\author{AUTHOR} command to the document\n"
 	<< indent << "-b,\t--bibsource=SOURCE\tAdd a \\addbibresources{SOURCE} to the document\n"
 	<< indent << "\t\t\t\tand if no biblatex package is used with the\n"
 	<< indent << "\t\t\t\t-u option add \\usepackage{biblatex} as well\n"
-	<< indent << "-d,\t--date=DATE\t\tAdd a \\date{DATE} command to the document\n"
+	<< indent << "-d,\t--date=[DATE]**\t\tAdd a \\date{DATE} command to the document\n"
 	<< indent << "-h,\t--help\t\t\tPrint this help and exit\n"
 	<< indent << "-l,\t--language=LANGUAGE\tLoad the babel package for LANGUAGE\n"
 	<< indent << "-u,\t--usepackage=PACKAGE\tAdd a \\usepackage{PACKAGE} statement\n"
 	<< indent << "-t,\t--title=TITLE\t\tAdd a \\title{TITLE} command to the document\n\n"
+	<< indent << "* Argument is optional as long as it is set in ~/.config/texplate.conf\n"
+	<< indent << "** Argument can be skipped to leave command empty\n"
 	<< "\nErrors:\n"
 	<< indent << "1\tMissing FILENAME or DOCUMENTCLASS\n"
 	<< indent << "2\tUnknown option\n"

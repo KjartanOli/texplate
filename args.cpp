@@ -17,6 +17,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <json/json.h>
+#include <json/value.h>
+
+#include "config.hpp"
 #include "args.hpp"
 
 std::map<std::string_view, argumentValues> argumentMap
@@ -43,23 +47,28 @@ std::map<std::string_view, argumentValues> argumentMap
 
 
 // set the members of the arguments struct appropriately to command line arguments
-arguments parse_args(int argc, char* argv[])
+#include <iostream>
+void parse_args(arguments& args, const Json::Value& config, int argc, char* argv[])
 {
-	arguments args{};
-
+	for (auto& package : config["packages"])
+	{
+		args.packages.push_back(package.asString());
+	}
 	for (int i{1}; i < argc; ++i)
 	{
 		std::string_view arg{argv[i]};
 		switch(argumentMap[arg])
 		{
 			case AUTHOR:
-				args.author = argv[++i];
+				// assume that if the next element in argv starts with a '-' assume it is a command
+				args.author = (argv[i + 1][0] == '-' || i + 1 == argc - 2 ? config["author"].asString() : argv[++i]);
 				break;
 			case TITLE:
-				args.title = argv[++i];
+				args.title = (argv[i + 1][0] == '-' || i + 1 == argc - 2 ? "" : argv[++i]);
 				break;
 			case DATE:
-				args.date = argv[++i];
+				// allow for empty date command
+				args.date = (argv[i + 1][0] == '-' || i + 1 == argc - 2 ? "" : argv[++i]);
 				break;
 			case USEPACKAGE:
 				args.packages.push_back(argv[++i]);
@@ -71,10 +80,10 @@ arguments parse_args(int argc, char* argv[])
 				args.version = true;
 				break;
 			case ENCODING:
-				args.encoding = argv[++i];
+				args.encoding = (argv[i + 1][0] == '-' || i + 1 == argc - 2 ? config["encoding"].asString() : argv[++i]);
 				break;
 			case LANGUAGE:
-				args.language = argv[++i];
+				args.language = (argv[i + 1][0] == '-' || i + 1 == argc - 2 ? config["language"].asString() : argv[++i]);
 				break;
 			case BIBSOURCE:
 				args.bibsources.push_back(argv[++i]);
@@ -94,13 +103,10 @@ arguments parse_args(int argc, char* argv[])
 				else
 				{
 					args.unknownOption = arg;
-					return args;
 				}
 				break;
 		}
 	}
-
-	return args;
 }
 
 // check if the packages list contains some biblatex package
